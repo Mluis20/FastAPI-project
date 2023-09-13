@@ -4,13 +4,17 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from jwt_manager import create_token
 from fastapi.security import HTTPBearer
+from config.database import Session, engine, Base
+from models.movie import Movie
 
 app = FastAPI()
 app.title = "Mi aplicación con FastAPI"
 app.version = "0.0.1"
 
+Base.metadata.create_all(bind = engine)
+
 class JWTBearer(HTTPBearer):
-    def __call__(self, request: Request):
+    async def __call__(self, request: Request):
         auth = await super().__call__(request)
         data = validate_token(auth.credentials)
         if data['email'] != "admin@gmail.com":
@@ -29,7 +33,7 @@ class Movie(BaseModel):
     category: str = Field(min_length= 5, max_length= 15)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "titulo": "Mi pelicula",
