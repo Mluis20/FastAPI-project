@@ -13,6 +13,7 @@ app.title = "Mi aplicación con FastAPI"
 app.version = "0.0.1"
 
 app.add_middleware(ErrorHandler)
+
 app.include_router(movie_router)
 app.include_router(user_router)
 
